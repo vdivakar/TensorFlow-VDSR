@@ -2,7 +2,7 @@ import tensorflow as tf
 import numpy as np
 import time
 import os
-
+#g_counter = 1
 from utils import (
     input_setup,
     checkpoint_dir,
@@ -10,6 +10,8 @@ from utils import (
     merge,
     checkimage,
     imsave
+    #get_file_list
+    #get_input_data
 )
 class VDSR(object):
 
@@ -18,18 +20,20 @@ class VDSR(object):
                  image_size,
                  label_size,
                  layer,
+                 #config,
                  c_dim):
         self.sess = sess
         self.image_size = image_size
         self.label_size = label_size
         self.layer = layer
         self.c_dim = c_dim
-        self.build_model()
+        self.build_model() # pass config
 
     def build_model(self):
+        #fs = 5
         self.images = tf.placeholder(tf.float32, [None, self.image_size, self.image_size, self.c_dim], name='images')
         self.labels = tf.placeholder(tf.float32, [None, self.label_size, self.label_size, self.c_dim], name='labels')
-        
+        #self.bilinear
         
         self.weights = {
             'w_start': tf.Variable(tf.random_normal([3, 3, self.c_dim, 64], stddev =np.sqrt(2.0/9)), name='w_start'),
@@ -55,6 +59,7 @@ class VDSR(object):
     def model(self):
         conv = []
         conv.append(tf.nn.relu(tf.nn.conv2d(self.images, self.weights['w_start'], strides=[1,1,1,1], padding='SAME') + self.biases['b_start']))
+        #batch norm
         for i in range(2, self.layer):
             conv.append(tf.nn.relu(tf.nn.conv2d(conv[i-2], self.weights['w_%d' % i], strides=[1,1,1,1], padding='SAME') + self.biases['b_%d' % i]))
         #conv2 = tf.nn.relu(tf.nn.conv2d(conv[0], self.weights['w_2'], strides=[1,1,1,1], padding='SAME') + self.biases['b_2'])        
