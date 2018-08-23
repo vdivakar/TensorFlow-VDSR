@@ -25,7 +25,9 @@ def main(_): #?
                       image_size = FLAGS.image_size,
                       label_size = FLAGS.label_size,
                       layer = FLAGS.layer,
-                      c_dim = FLAGS.c_dim)
+                      c_dim = FLAGS.c_dim
+                      # config = FLAGS
+                   )
 
         vdsr.train(FLAGS)
 
